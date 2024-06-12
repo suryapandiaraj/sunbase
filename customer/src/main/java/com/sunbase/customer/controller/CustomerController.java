@@ -40,7 +40,7 @@ public class CustomerController {
     }
 
     // get all customer
-    @GetMapping
+    @GetMapping("/pagination/{page}/{size}/{sortBy}")
     public Page<Customer> getAllCustomers(Authentication authentication,
                                           @RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "10") int size,
