@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer List</title>
+    <link rel="stylesheet" href="customers-list.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Customer List</h2>
+      <button id="create-customer-btn"><b>Create New Customer</b></button>
+
+      <div class="search-container">
+        <form id="customerForm">
+          <select id="searchParam" name="searchParam">
+            <option value="" selected disabled>Search by</option>
+            <option value="firstName">First Name</option>
+            <option value="lastName">Last Name</option>
+            <option value="email">Email</option>
+            <option value="phone">Phone</option>
+            <option value="address">Address</option>
+            <option value="city">City</option>
+            <option value="state">State</option>
+          </select>
+          <input
+            type="text"
+            id="searchValue"
+            name="searchValue"
+            placeholder="Enter search value"
+          />
+          <button id="search-btn"><b>Search</b></button>
+          <button id="sync-btn"><b>Sync</b></button>
+        </form>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>LastName</th>
+          <th>Address</th>
+          <th>City</th>
+          <th>State</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="customerTableBody">
+        <!-- Table rows with customer details will be dynamically added here -->
+      </tbody>
+    </table>
+    <script>
+      // Function to authenticate user and get bearer token
+      function authenticateUser() {
+        const url =
+          "https://qa.sunbasedata.com/sunbase/portal/api/assignment_auth.jsp";
+        const data = {
+          login_id: "test@sunbasedata.com",
+          password: "Test@123",
+        };
+
+        return fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to authenticate user");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            return data.token;
+          });
+      }
+
+      // Function to fetch customer list and sync with database
+      function syncCustomers() {
+        authenticateUser().then((token) => {
+          const syncUrl =
+            "https://qa.sunbasedata.com/sunbase/portal/api/assignment.jsp "; // Replace with the actual URL to fetch customer list
+          const data = {
+            cmd: "get_customer_list",
+          };
+          fetch(syncUrl, {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Failed to fetch customer list");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              // Process fetched customer list and update database
+              data.customers.forEach((customer) => {
+                // Check if customer exists in database
+                // If exists, update customer record
+                // If not exists, insert new customer record
+              });
+            })
+            .catch((error) => {
+              console.error("Error syncing customers:", error);
+            });
+        });
+      }
+
+      // Event listener for sync button click
+      document
+        .getElementById("sync-btn")
+        .addEventListener("click", syncCustomers);
+
+      fetch("http://localhost:8080/customers/getAllCustomers")
+        .then((response) => response.json())
+        .then((data) => {
+          const customerTableBody =
+            document.getElementById("customerTableBody");
+
+          data.forEach((customer) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                    <td>${customer.id}</td>
+                    <td>${customer.name}</td>
+                    <td>${customer.email}</td>
+                    <td class="actions">
+                        <button class="edit-btn" title="Edit" onclick="editCustomer(${customer.id})"><i class="fas fa-edit"></i></button>
+                        <button class="delete-btn" title="Delete" onclick="deleteCustomer(${customer.id})"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                `;
+            customerTableBody.appendChild(row);
+          });
+        })
+        .catch((error) => console.error("Error fetching data:", error));
+
+      document
+        .getElementById("create-customer-btn")
+        .addEventListener("click", function () {
+          // Redirect to another HTML page
+          window.location.href = "create-customer.html";
+        });
+
+      function editCustomer(customerId) {
+        console.log("Editing customer with ID:", customerId);
+        window.location.href = "edit-customer.html";
+      }
+
+      function deleteCustomer(customerId) {
+        console.log("Deleting customer with ID:", customerId);
+      }
+    </script>
+  </body>
+</html>

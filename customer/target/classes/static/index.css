@@ -1,0 +1,27 @@
+body {
+  font-family: Arial, sans-serif;
+}
+.container {
+  width: 300px;
+  margin: 0 auto;
+  margin-top: 100px;
+  text-align: center;
+}
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  box-sizing: border-box;
+}
+button {
+  padding: 10px 20px;
+  background-color: rgb(43, 38, 38);
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+button:hover {
+  background-color: rgb(71, 74, 236);
+}

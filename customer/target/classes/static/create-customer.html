@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="create-customer.css" />
+    <title>Create Customer</title>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Create Customer</h2>
+      <form id="customerForm">
+        <input
+          type="text"
+          id="firstName"
+          name="firstName"
+          placeholder="First Name"
+          required
+        /><br />
+
+        <input
+          type="text"
+          id="lastName"
+          name="lastName"
+          placeholder="Last Name"
+          required
+        /><br />
+
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Email"
+          required
+        /><br />
+
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          placeholder="Phone"
+          required
+        /><br />
+
+        <input
+          type="text"
+          id="address"
+          name="address"
+          placeholder="Address"
+          required
+        /><br />
+
+        <input
+          type="text"
+          id="city"
+          name="city"
+          placeholder="City"
+          required
+        /><br />
+
+        <input
+          type="text"
+          id="state"
+          name="state"
+          placeholder="State"
+          required
+        /><br />
+
+        <button onclick="createUser()">Create</button>
+      </form>
+    </div>
+
+    <script>
+      function createUser() {
+        const formData = new FormData(document.getElementById("userForm"));
+        const user = {};
+        formData.forEach((value, key) => {
+          user[key] = value;
+        });
+
+        fetch("http://localhost:8080/customers/createCustomer", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(user),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to create user");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            alert("User created successfully");
+            console.log(data); // Log the response from the backend
+          })
+          .catch((error) => {
+            console.error(error);
+            alert("Failed to create user");
+          });
+      }
+    </script>
+  </body>
+</html>
