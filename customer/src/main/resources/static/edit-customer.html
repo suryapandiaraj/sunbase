@@ -93,8 +93,11 @@
           formData.forEach((value, key) => {
             user[key] = value;
           });
-          fetch("http://localhost:8080/customers/editCustomer", {
-            method: "POST",
+
+          let url = "http://localhost:8080/customers/editCustomer";
+          url.concat(custId);
+          fetch(url, {
+            method: "PUT",
             headers: {
               "Content-Type": "application/json",
             },

@@ -5,6 +5,9 @@ import com.sunbase.customer.entity.Customer;
 import com.sunbase.customer.entity.User;
 import com.sunbase.customer.repository.UserRepository;
 import com.sunbase.customer.service.CustomerService;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
@@ -31,7 +34,7 @@ public class CustomerController {
     }
 
     // edit customer
-    @PutMapping("/{id}")
+    @PutMapping("/editCustomer/{id}")
     public Customer editCustomer(@PathVariable Long id, @RequestBody Customer customerDetails, Authentication authentication){
         String username = ((UserDetails) authentication.getPrincipal()).getUsername();
         User user = userRepository.findByUsername(username)
@@ -39,6 +42,12 @@ public class CustomerController {
         return customerService.editCustomer(id, customerDetails, user);
     }
 
+
+    @GetMapping("/getAllCustomers")
+    public List<Customer> getMethodName(@RequestParam String param) {
+        return customerService.getAllCustomers();
+    }
+    
     // get all customer
     @GetMapping("/pagination/{page}/{size}/{sortBy}")
     public Page<Customer> getAllCustomers(Authentication authentication,

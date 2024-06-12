@@ -5,6 +5,9 @@ import com.sunbase.customer.exceptions.UnauthorizedException;
 import com.sunbase.customer.entity.Customer;
 import com.sunbase.customer.entity.User;
 import com.sunbase.customer.repository.CustomerRepository;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,8 +27,9 @@ public class CustomerService {
     }
 
     //edit customer
-    public Customer editCustomer(Long id, Customer customerDetails, User user){
-        Customer customer = customerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+    public Customer editCustomer(Long id, Customer customerDetails, User user) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
         if (!customer.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException("You are not authorized to edit this customer");
         }
@@ -39,7 +43,10 @@ public class CustomerService {
         customer.setPhone(customerDetails.getPhone());
         return customerRepository.save(customer);
     }
-
+    public List<Customer> getAllCustomers(){
+        return customerRepository.findAll();
+    }
+    
     //get all customers
     public Page<Customer> getAllCustomers(User user, int page, int size, String sortBy){
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
